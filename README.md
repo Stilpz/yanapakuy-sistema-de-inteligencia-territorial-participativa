@@ -36,9 +36,22 @@ La propuesta original recomienda **Laravel + PostgreSQL/PostGIS + Vue/Nuxt**. Es
 - **Panel autenticado**: Mis aportes, Deliberar, Moderación (validar/rechazar con motivo), Publicar indicadores (GESTOR/ADMIN), Usuarios y roles (ADMIN), Auditoría/log de moderación.
 
 ## URIs funcionales (API)
-**Público:** `GET /api/layers` · `GET /api/indicators` · `GET /api/indicators/:code/series` · `GET /api/scenarios` · `GET /api/field-submissions` (validados) · `GET /api/consent` · `POST /api/perception` (anónima) · `GET /api/perception/aggregate` · `POST /api/auth/register|login`
+> **Convención:** rutas en español alineadas al vocabulario del dominio para reducir carga cognitiva.
+> `consulta` (público) · `auth` · `perfil` · `aportes` · `deliberacion` · `moderacion` · `administracion`.
 
-**Autenticado (Bearer):** `GET /api/me` · `POST /api/field-submissions` (`field.create`) · `GET /api/field-submissions/mine` · `PATCH /api/field-submissions/:uuid` · `POST/GET /api/contributions` · `GET /api/moderation/queue` · `PATCH /api/moderation/field-submissions/:uuid/validate|reject` · `PATCH /api/moderation/contributions/:uuid/validate|reject` · `POST /api/admin/indicators` · `GET/PATCH /api/admin/users` · `GET /api/admin/roles|audit|moderation-log`
+**Público (sin login):** `GET /api/layers` · `GET /api/indicators` · `GET /api/indicators/:code/series` · `GET /api/scenarios` · `GET /api/aportes` (validados) · `GET /api/consent` · `POST /api/perception` (anónima) · `GET /api/perception/aggregate` · `POST /api/auth/register|login`
+
+**Autenticado (Bearer):** `GET /api/perfil` · `POST /api/aportes` (`field.create`) · `GET /api/aportes/mine` · `PATCH /api/aportes/:uuid` · `POST/GET /api/deliberacion` · `GET /api/moderacion/queue` · `PATCH /api/moderacion/aportes/:uuid/validate|reject` · `PATCH /api/moderacion/deliberacion/:uuid/validate|reject` · `POST /api/administracion/indicators` · `GET/PATCH /api/administracion/users` · `GET /api/administracion/roles|audit|moderation-log`
+
+### Mapa de renombrado (antes → ahora)
+| Antes (EN) | Ahora (ES) | Concepto |
+|---|---|---|
+| `/field-submissions` | `/aportes` | Aportes de campo georreferenciados |
+| `/contributions` | `/deliberacion` | Comentarios y propuestas |
+| `/moderation` | `/moderacion` | Cola de validación del moderador |
+| `/admin` | `/administracion` | Gestión usuarios / roles / indicadores |
+| `/me` | `/perfil` | Perfil del usuario en sesión |
+| `public.ts` | `consulta.ts` | Acceso público sin login |
 
 ## Arquitectura de datos
 - **Modelos**: roles, permissions, role_permissions, users, actor_profiles, consents, field_submissions, perception_responses, map_layers, indicators, indicator_values, scenarios, scenario_projections, contributions, moderation_log, audit_log.
