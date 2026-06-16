@@ -47,12 +47,11 @@ INSERT OR IGNORE INTO role_permissions (role_id, permission_id)
 INSERT OR IGNORE INTO role_permissions (role_id, permission_id)
  SELECT r.id, p.id FROM roles r, permissions p WHERE r.code='ADMIN';
 
--- ---------- ADMIN inicial (password: ZarzalSITP2026!) ----------
-INSERT OR IGNORE INTO users (uuid, name, email, password_hash, role_id, status, email_verified_at)
- SELECT '00000000-0000-4000-8000-000000000001', 'Administrador SITP', 'admin@sitp-zarzal.co',
-        'pbkdf2$100000$714d7737db8dea168d86d131837d12da$5fc8a888dc2f1a8687d69ae886efb6a966f11bba526d2abe97f63df2e49f49ab',
-        r.id, 'activo', datetime('now')
- FROM roles r WHERE r.code='ADMIN';
+-- ---------- ADMIN inicial ----------
+-- (Opcion A) El primer ADMIN NO se crea aqui. Se crea via POST /api/auth/bootstrap
+-- usando el secreto ADMIN_BOOTSTRAP_TOKEN. Asi ninguna credencial queda en el repositorio.
+-- El email institucional sugerido es: admin@yanapakuy-zarzal.co
+-- Ver guia: docs/CREACION_USUARIOS.md
 
 -- ---------- CONSENTIMIENTO INFORMADO (Ley 1581/2012) ----------
 INSERT OR IGNORE INTO consents (version, body, hash) VALUES

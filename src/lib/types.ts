@@ -3,6 +3,8 @@ import type { JwtPayload } from './auth'
 export type Bindings = {
   DB: D1Database
   JWT_SECRET?: string
+  /** Token de un solo uso para crear el primer ADMIN (bootstrap). Guardar como secreto: wrangler pages secret put ADMIN_BOOTSTRAP_TOKEN */
+  ADMIN_BOOTSTRAP_TOKEN?: string
 }
 
 export type Variables = {

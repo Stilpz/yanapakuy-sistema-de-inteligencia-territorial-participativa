@@ -62,7 +62,7 @@ La propuesta original recomienda **Laravel + PostgreSQL/PostGIS + Vue/Nuxt**. Es
 1. **Consultar**: abre el sitio, navega geovisor / indicadores / escenarios sin cuenta.
 2. **Responder percepción**: botón "Responder encuesta" — anónimo, requiere marcar consentimiento.
 3. **Aportar**: "Crear perfil" → login → "Crear aporte" o pestaña Deliberar.
-4. **Moderar/Administrar**: login admin → **admin@sitp-zarzal.co / ZarzalSITP2026!** → panel con pestañas según rol.
+4. **Moderar/Administrar**: el primer ADMIN se crea con `POST /api/auth/bootstrap` (token secreto `ADMIN_BOOTSTRAP_TOKEN`). Email institucional sugerido: **admin@yanapakuy-zarzal.co**. Después: login → panel con pestañas según rol. Ver guía: [`docs/CREACION_USUARIOS.md`](docs/CREACION_USUARIOS.md).
 
 ## Desarrollo
 ```bash
