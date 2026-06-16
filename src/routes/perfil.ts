@@ -2,10 +2,10 @@ import { Hono } from 'hono'
 import type { Bindings, Variables } from '../lib/types'
 import { requireAuth } from '../lib/middleware'
 
-const me = new Hono<{ Bindings: Bindings; Variables: Variables }>()
+const perfil = new Hono<{ Bindings: Bindings; Variables: Variables }>()
 
-// GET /api/me — perfil + roles + permisos
-me.get('/', requireAuth, async (c) => {
+// GET /api/perfil — perfil + roles + permisos
+perfil.get('/', requireAuth, async (c) => {
   const u = c.get('user')
   const perms = c.get('permissions')
   const user = await c.env.DB
@@ -28,4 +28,4 @@ me.get('/', requireAuth, async (c) => {
   })
 })
 
-export default me
+export default perfil

@@ -6,7 +6,7 @@ const mod = new Hono<{ Bindings: Bindings; Variables: Variables }>()
 
 mod.use('/*', requireAuth)
 
-// GET /api/moderation/queue — cola de aportes + contribuciones pendientes
+// GET /api/moderacion/queue — cola de aportes + contribuciones pendientes
 mod.get('/queue', requirePermission('moderation.queue.view'), async (c) => {
   const { results: submissions } = await c.env.DB
     .prepare(
@@ -46,8 +46,8 @@ mod.get('/queue', requirePermission('moderation.queue.view'), async (c) => {
   })
 })
 
-// PATCH /api/moderation/field-submissions/:uuid/validate
-mod.patch('/field-submissions/:uuid/validate', requirePermission('field.validate'), async (c) => {
+// PATCH /api/moderacion/aportes/:uuid/validate
+mod.patch('/aportes/:uuid/validate', requirePermission('field.validate'), async (c) => {
   const user = c.get('user')
   const uuid = c.req.param('uuid')
   const row = await c.env.DB.prepare('SELECT id FROM field_submissions WHERE uuid = ?').bind(uuid).first<any>()
@@ -65,8 +65,8 @@ mod.patch('/field-submissions/:uuid/validate', requirePermission('field.validate
   return c.json({ message: 'Aporte validado y publicado.', id: uuid, status: 'validado' })
 })
 
-// PATCH /api/field-submissions/:uuid/reject
-mod.patch('/field-submissions/:uuid/reject', requirePermission('field.validate'), async (c) => {
+// PATCH /api/moderacion/aportes/:uuid/reject
+mod.patch('/aportes/:uuid/reject', requirePermission('field.validate'), async (c) => {
   const user = c.get('user')
   const uuid = c.req.param('uuid')
   const { reason } = await c.req.json().catch(() => ({}))
@@ -84,8 +84,8 @@ mod.patch('/field-submissions/:uuid/reject', requirePermission('field.validate')
   return c.json({ message: 'Aporte rechazado.', id: uuid, status: 'rechazado' })
 })
 
-// PATCH /api/contributions/:uuid/validate
-mod.patch('/contributions/:uuid/validate', requirePermission('field.validate'), async (c) => {
+// PATCH /api/moderacion/deliberacion/:uuid/validate
+mod.patch('/deliberacion/:uuid/validate', requirePermission('field.validate'), async (c) => {
   const user = c.get('user')
   const uuid = c.req.param('uuid')
   const row = await c.env.DB.prepare('SELECT id FROM contributions WHERE uuid = ?').bind(uuid).first<any>()
@@ -98,8 +98,8 @@ mod.patch('/contributions/:uuid/validate', requirePermission('field.validate'), 
   return c.json({ message: 'Contribucion validada.', id: uuid, status: 'validado' })
 })
 
-// PATCH /api/contributions/:uuid/reject
-mod.patch('/contributions/:uuid/reject', requirePermission('field.validate'), async (c) => {
+// PATCH /api/moderacion/deliberacion/:uuid/reject
+mod.patch('/deliberacion/:uuid/reject', requirePermission('field.validate'), async (c) => {
   const user = c.get('user')
   const uuid = c.req.param('uuid')
   const { reason } = await c.req.json().catch(() => ({}))

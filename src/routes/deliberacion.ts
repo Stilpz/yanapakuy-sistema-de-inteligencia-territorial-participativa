@@ -3,14 +3,14 @@ import { uuidv4 } from '../lib/auth'
 import type { Bindings, Variables } from '../lib/types'
 import { requireAuth, requirePermission } from '../lib/middleware'
 
-const contrib = new Hono<{ Bindings: Bindings; Variables: Variables }>()
+const deliberacion = new Hono<{ Bindings: Bindings; Variables: Variables }>()
 
 const TYPES = ['propuesta', 'comentario', 'alerta']
 
-contrib.use('/*', requireAuth)
+deliberacion.use('/*', requireAuth)
 
 // POST /api/contributions — propuesta/comentario/alerta en estado 'pendiente'
-contrib.post('/', requirePermission('contributions.create'), async (c) => {
+deliberacion.post('/', requirePermission('contributions.create'), async (c) => {
   const user = c.get('user')
   const body = await c.req.json().catch(() => ({}))
   const { type, content, geometry } = body
@@ -32,7 +32,7 @@ contrib.post('/', requirePermission('contributions.create'), async (c) => {
 })
 
 // GET /api/contributions/mine
-contrib.get('/mine', async (c) => {
+deliberacion.get('/mine', async (c) => {
   const user = c.get('user')
   const { results } = await c.env.DB
     .prepare('SELECT uuid, type, content, status, created_at FROM contributions WHERE user_id = ? ORDER BY created_at DESC')
@@ -48,4 +48,4 @@ contrib.get('/mine', async (c) => {
   return c.json({ data })
 })
 
-export default contrib
+export default deliberacion

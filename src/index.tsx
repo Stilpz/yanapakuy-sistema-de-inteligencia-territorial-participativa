@@ -3,12 +3,12 @@ import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
 import type { Bindings, Variables } from './lib/types'
 import authRoutes from './routes/auth'
-import publicRoutes from './routes/public'
-import meRoutes from './routes/me'
-import submissionRoutes from './routes/submissions'
-import contributionRoutes from './routes/contributions'
-import moderationRoutes from './routes/moderation'
-import adminRoutes from './routes/admin'
+import consultaRoutes from './routes/consulta'
+import perfilRoutes from './routes/perfil'
+import aportesRoutes from './routes/aportes'
+import deliberacionRoutes from './routes/deliberacion'
+import moderacionRoutes from './routes/moderacion'
+import administracionRoutes from './routes/administracion'
 import { html } from './page'
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
@@ -21,14 +21,14 @@ const api = new Hono<{ Bindings: Bindings; Variables: Variables }>()
 
 api.get('/health', (c) => c.json({ status: 'ok', service: 'Yanapakuy (SITP Zarzal)', ts: new Date().toISOString() }))
 
-api.route('/auth', authRoutes)
-api.route('/me', meRoutes)
-api.route('/field-submissions', submissionRoutes)
-api.route('/contributions', contributionRoutes)
-api.route('/moderation', moderationRoutes)
-api.route('/admin', adminRoutes)
-// rutas publicas (capas, indicadores, escenarios, percepcion) van al final para no chocar
-api.route('/', publicRoutes)
+api.route('/auth', authRoutes)            // autenticacion (registro / login / logout)
+api.route('/perfil', perfilRoutes)        // perfil del usuario en sesion
+api.route('/aportes', aportesRoutes)      // aportes de campo georreferenciados
+api.route('/deliberacion', deliberacionRoutes) // comentarios y propuestas
+api.route('/moderacion', moderacionRoutes)     // cola de validacion del moderador
+api.route('/administracion', administracionRoutes) // gestion usuarios / roles / indicadores
+// consulta publica (capas, indicadores, escenarios, percepcion) va al final para no chocar
+api.route('/', consultaRoutes)
 
 app.route('/api', api)
 

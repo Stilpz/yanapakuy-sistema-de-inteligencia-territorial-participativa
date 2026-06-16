@@ -2,12 +2,12 @@ import { Hono } from 'hono'
 import type { Bindings, Variables } from '../lib/types'
 import { requireAuth, requirePermission } from '../lib/middleware'
 
-const admin = new Hono<{ Bindings: Bindings; Variables: Variables }>()
+const administracion = new Hono<{ Bindings: Bindings; Variables: Variables }>()
 
-admin.use('/*', requireAuth)
+administracion.use('/*', requireAuth)
 
-// GET /api/admin/users — listado (ADMIN)
-admin.get('/users', requirePermission('users.manage'), async (c) => {
+// GET /api/administracion/users — listado (ADMIN)
+administracion.get('/users', requirePermission('users.manage'), async (c) => {
   const { results } = await c.env.DB
     .prepare(
       `SELECT u.uuid, u.name, u.email, u.status, u.created_at, r.code AS role,
@@ -20,8 +20,8 @@ admin.get('/users', requirePermission('users.manage'), async (c) => {
   return c.json({ data: results || [] })
 })
 
-// GET /api/admin/roles — roles + permisos (ADMIN)
-admin.get('/roles', requirePermission('users.manage'), async (c) => {
+// GET /api/administracion/roles — roles + permisos (ADMIN)
+administracion.get('/roles', requirePermission('users.manage'), async (c) => {
   const { results: roles } = await c.env.DB.prepare('SELECT id, code, name, description, is_system FROM roles ORDER BY id').all<any>()
   const data = []
   for (const r of roles || []) {
@@ -34,8 +34,8 @@ admin.get('/roles', requirePermission('users.manage'), async (c) => {
   return c.json({ data })
 })
 
-// PATCH /api/admin/users/:uuid/role — cambia el rol de un usuario (ADMIN)
-admin.patch('/users/:uuid/role', requirePermission('users.manage'), async (c) => {
+// PATCH /api/administracion/users/:uuid/role — cambia el rol de un usuario (ADMIN)
+administracion.patch('/users/:uuid/role', requirePermission('users.manage'), async (c) => {
   const uuid = c.req.param('uuid')
   const { role } = await c.req.json().catch(() => ({}))
   const roleRow = await c.env.DB.prepare('SELECT id FROM roles WHERE code = ?').bind(role).first<any>()
@@ -45,8 +45,8 @@ admin.patch('/users/:uuid/role', requirePermission('users.manage'), async (c) =>
   return c.json({ message: 'Rol actualizado.', uuid, role })
 })
 
-// PATCH /api/admin/users/:uuid/status — activar/suspender (ADMIN)
-admin.patch('/users/:uuid/status', requirePermission('users.manage'), async (c) => {
+// PATCH /api/administracion/users/:uuid/status — activar/suspender (ADMIN)
+administracion.patch('/users/:uuid/status', requirePermission('users.manage'), async (c) => {
   const uuid = c.req.param('uuid')
   const { status } = await c.req.json().catch(() => ({}))
   if (!['pendiente', 'activo', 'suspendido'].includes(status)) return c.json({ message: 'Estado invalido.' }, 422)
@@ -56,7 +56,7 @@ admin.patch('/users/:uuid/status', requirePermission('users.manage'), async (c) 
 })
 
 // POST /api/indicators — publicar valor oficial (GESTOR_INSTITUCIONAL / ADMIN)
-admin.post('/indicators', requirePermission('indicators.publish'), async (c) => {
+administracion.post('/indicators', requirePermission('indicators.publish'), async (c) => {
   const { code, period, value, note } = await c.req.json().catch(() => ({}))
   const ind = await c.env.DB.prepare('SELECT id FROM indicators WHERE code = ?').bind(code).first<any>()
   if (!ind) return c.json({ message: 'Indicador no existe.' }, 422)
@@ -72,8 +72,8 @@ admin.post('/indicators', requirePermission('indicators.publish'), async (c) => 
   return c.json({ message: 'Indicador publicado.', code, period, value }, 201)
 })
 
-// GET /api/admin/audit — auditoria (ADMIN)
-admin.get('/audit', requirePermission('audit.view'), async (c) => {
+// GET /api/administracion/audit — auditoria (ADMIN)
+administracion.get('/audit', requirePermission('audit.view'), async (c) => {
   const { results } = await c.env.DB
     .prepare(
       `SELECT a.action, a.created_at, u.name AS user
@@ -84,8 +84,8 @@ admin.get('/audit', requirePermission('audit.view'), async (c) => {
   return c.json({ data: results || [] })
 })
 
-// GET /api/admin/moderation-log — historial de moderacion (MODERADOR+)
-admin.get('/moderation-log', requirePermission('moderation.queue.view'), async (c) => {
+// GET /api/administracion/moderation-log — historial de moderacion (MODERADOR+)
+administracion.get('/moderation-log', requirePermission('moderation.queue.view'), async (c) => {
   const { results } = await c.env.DB
     .prepare(
       `SELECT m.entity_table, m.action, m.reason, m.created_at, u.name AS moderator
@@ -96,4 +96,4 @@ admin.get('/moderation-log', requirePermission('moderation.queue.view'), async (
   return c.json({ data: results || [] })
 })
 
-export default admin
+export default administracion

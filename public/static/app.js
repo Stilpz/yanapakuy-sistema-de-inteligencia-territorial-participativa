@@ -38,7 +38,7 @@ function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, (m) => (
 // ---------- Bootstrap ----------
 async function boot() {
   if (State.token) {
-    try { const { data } = await api.get('/me'); State.user = data } catch { setToken(null) }
+    try { const { data } = await api.get('/perfil'); State.user = data } catch { setToken(null) }
   }
   render()
 }
@@ -298,7 +298,7 @@ const CAT_LABEL = { sismo: 'Riesgo sismico (Romeral)', via: 'Estado de via', hid
 
 async function loadSubmissionsLayer() {
   try {
-    const { data } = await api.get('/field-submissions')
+    const { data } = await api.get('/aportes')
     State.submissions = data.data
     const grp = L.geoJSON({ type: 'FeatureCollection', features: data.data.map((s) => ({ type: 'Feature', geometry: s.geometry, properties: { ...s } })) }, {
       pointToLayer: (f, latlng) => L.circleMarker(latlng, { radius: 6, color: CAT_COLOR[f.properties.category] || '#fff', fillColor: CAT_COLOR[f.properties.category] || '#fff', fillOpacity: .85, weight: 2 }),
@@ -602,7 +602,7 @@ function openFieldForm() {
     for (const [k, v] of fd.entries()) if (k.startsWith('attr_') && v) attributes[k.slice(5)] = v
     const geometry = { type: 'Point', coordinates: [parseFloat(fd.get('lng')), parseFloat(fd.get('lat'))] }
     try {
-      await api.post('/field-submissions', { category, geometry, attributes, photo_url: fd.get('photo_url') || null })
+      await api.post('/aportes', { category, geometry, attributes, photo_url: fd.get('photo_url') || null })
       closeModal(); toast('Aporte enviado. Quedo pendiente de moderacion.', 'ok')
       if (State.view === 'dashboard') initDashboard()
     } catch (err) {
@@ -654,7 +654,7 @@ function initDashboard() {
 
 async function loadMine(content) {
   try {
-    const { data } = await api.get('/field-submissions/mine')
+    const { data } = await api.get('/aportes/mine')
     let html = `<div class="flex-between" style="margin-bottom:16px"><p class="muted">Tus aportes de campo y su estado de moderacion.</p>
       <button class="btn btn-campo btn-sm" id="dash-new-field"><i class="fas fa-plus"></i> Nuevo aporte</button></div>`
     if (!data.data.length) html += `<div class="empty"><i class="fas fa-location-dot"></i><div>Aun no has creado aportes.</div></div>`
@@ -670,7 +670,7 @@ async function loadMine(content) {
 
 async function loadDeliberar(content) {
   try {
-    const { data } = await api.get('/contributions/mine')
+    const { data } = await api.get('/deliberacion/mine')
     let html = `<div class="card" style="margin-bottom:18px">
       <h3>Nueva contribucion</h3>
       <form class="form-grid" id="contrib-form" style="max-width:100%">
@@ -685,7 +685,7 @@ async function loadDeliberar(content) {
     document.getElementById('contrib-form').addEventListener('submit', async (e) => {
       e.preventDefault()
       const fd = Object.fromEntries(new FormData(e.target).entries())
-      try { await api.post('/contributions', fd); toast('Contribucion enviada (pendiente).', 'ok'); loadDeliberar(content) }
+      try { await api.post('/deliberacion', fd); toast('Contribucion enviada (pendiente).', 'ok'); loadDeliberar(content) }
       catch (err) { toast(err.response?.data?.message || 'Error.', 'err') }
     })
   } catch (e) { content.innerHTML = '<div class="empty">Error al cargar.</div>' }
@@ -693,7 +693,7 @@ async function loadDeliberar(content) {
 
 async function loadModeration(content) {
   try {
-    const { data } = await api.get('/moderation/queue')
+    const { data } = await api.get('/moderacion/queue')
     const fs = data.data.field_submissions, ct = data.data.contributions
     let html = `<p class="muted" style="margin-bottom:16px">Cola de moderacion: aportes y contribuciones pendientes. Validar publica; rechazar exige motivo (trazable).</p>`
     if (!fs.length && !ct.length) html += `<div class="empty"><i class="fas fa-circle-check"></i><div>No hay nada pendiente. Todo al dia.</div></div>`
@@ -717,10 +717,10 @@ async function loadModeration(content) {
       </div>`).join('')
     content.innerHTML = html
     const reload = () => loadModeration(content)
-    content.querySelectorAll('[data-validate-fs]').forEach((b) => b.addEventListener('click', async () => { await api.patch(`/moderation/field-submissions/${b.dataset.validateFs}/validate`); toast('Aporte validado y publicado.', 'ok'); reload() }))
-    content.querySelectorAll('[data-reject-fs]').forEach((b) => b.addEventListener('click', async () => { const reason = prompt('Motivo del rechazo:'); if (!reason) return; await api.patch(`/moderation/field-submissions/${b.dataset.rejectFs}/reject`, { reason }); toast('Aporte rechazado.', 'ok'); reload() }))
-    content.querySelectorAll('[data-validate-ct]').forEach((b) => b.addEventListener('click', async () => { await api.patch(`/moderation/contributions/${b.dataset.validateCt}/validate`); toast('Contribucion validada.', 'ok'); reload() }))
-    content.querySelectorAll('[data-reject-ct]').forEach((b) => b.addEventListener('click', async () => { const reason = prompt('Motivo del rechazo:'); if (!reason) return; await api.patch(`/moderation/contributions/${b.dataset.rejectCt}/reject`, { reason }); toast('Contribucion rechazada.', 'ok'); reload() }))
+    content.querySelectorAll('[data-validate-fs]').forEach((b) => b.addEventListener('click', async () => { await api.patch(`/moderacion/aportes/${b.dataset.validateFs}/validate`); toast('Aporte validado y publicado.', 'ok'); reload() }))
+    content.querySelectorAll('[data-reject-fs]').forEach((b) => b.addEventListener('click', async () => { const reason = prompt('Motivo del rechazo:'); if (!reason) return; await api.patch(`/moderacion/aportes/${b.dataset.rejectFs}/reject`, { reason }); toast('Aporte rechazado.', 'ok'); reload() }))
+    content.querySelectorAll('[data-validate-ct]').forEach((b) => b.addEventListener('click', async () => { await api.patch(`/moderacion/deliberacion/${b.dataset.validateCt}/validate`); toast('Contribucion validada.', 'ok'); reload() }))
+    content.querySelectorAll('[data-reject-ct]').forEach((b) => b.addEventListener('click', async () => { const reason = prompt('Motivo del rechazo:'); if (!reason) return; await api.patch(`/moderacion/deliberacion/${b.dataset.rejectCt}/reject`, { reason }); toast('Contribucion rechazada.', 'ok'); reload() }))
   } catch (e) { content.innerHTML = '<div class="empty">Error al cargar.</div>' }
 }
 
@@ -728,7 +728,7 @@ async function loadPublish(content) {
   try {
     const { data } = await api.get('/indicators')
     content.innerHTML = `<div class="card"><h3>Publicar valor de indicador oficial</h3>
-      <p class="muted" style="margin-bottom:14px">Solo GESTOR_INSTITUCIONAL / ADMIN. Equivale a POST /api/admin/indicators.</p>
+      <p class="muted" style="margin-bottom:14px">Solo GESTOR_INSTITUCIONAL / ADMIN. Equivale a POST /api/administracion/indicators.</p>
       <form class="form-grid" id="pub-form" style="max-width:100%">
         <div class="field"><label>Indicador</label><select name="code">${data.data.map((i) => `<option value="${i.code}">${esc(i.name)} (${esc(i.unit || '')})</option>`).join('')}</select></div>
         <div class="grid-2" style="gap:12px">
@@ -741,7 +741,7 @@ async function loadPublish(content) {
     document.getElementById('pub-form').addEventListener('submit', async (e) => {
       e.preventDefault()
       const fd = Object.fromEntries(new FormData(e.target).entries())
-      try { await api.post('/admin/indicators', fd); toast('Indicador publicado.', 'ok') }
+      try { await api.post('/administracion/indicators', fd); toast('Indicador publicado.', 'ok') }
       catch (err) { toast(err.response?.data?.message || 'Error.', 'err') }
     })
   } catch (e) { content.innerHTML = '<div class="empty">Error al cargar.</div>' }
@@ -749,7 +749,7 @@ async function loadPublish(content) {
 
 async function loadUsers(content) {
   try {
-    const [usersRes, rolesRes] = await Promise.all([api.get('/admin/users'), api.get('/admin/roles')])
+    const [usersRes, rolesRes] = await Promise.all([api.get('/administracion/users'), api.get('/administracion/roles')])
     const roles = rolesRes.data.data.map((r) => r.code)
     let html = `<p class="muted" style="margin-bottom:16px">Gestion de usuarios y roles (RBAC extensible en BD).</p>
       <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Nombre</th><th>Email</th><th>MACTOR</th><th>Rol</th><th>Estado</th></tr></thead><tbody>`
@@ -762,17 +762,17 @@ async function loadUsers(content) {
     html += '</tbody></table></div>'
     content.innerHTML = html
     content.querySelectorAll('[data-role-uuid]').forEach((sel) => sel.addEventListener('change', async () => {
-      try { await api.patch(`/admin/users/${sel.dataset.roleUuid}/role`, { role: sel.value }); toast('Rol actualizado.', 'ok') } catch (e) { toast('Error.', 'err') }
+      try { await api.patch(`/administracion/users/${sel.dataset.roleUuid}/role`, { role: sel.value }); toast('Rol actualizado.', 'ok') } catch (e) { toast('Error.', 'err') }
     }))
     content.querySelectorAll('[data-status-uuid]').forEach((sel) => sel.addEventListener('change', async () => {
-      try { await api.patch(`/admin/users/${sel.dataset.statusUuid}/status`, { status: sel.value }); toast('Estado actualizado.', 'ok') } catch (e) { toast('Error.', 'err') }
+      try { await api.patch(`/administracion/users/${sel.dataset.statusUuid}/status`, { status: sel.value }); toast('Estado actualizado.', 'ok') } catch (e) { toast('Error.', 'err') }
     }))
   } catch (e) { content.innerHTML = '<div class="empty">Error al cargar.</div>' }
 }
 
 async function loadAudit(content) {
   try {
-    const [auditRes, modRes] = await Promise.all([api.get('/admin/audit'), api.get('/admin/moderation-log')])
+    const [auditRes, modRes] = await Promise.all([api.get('/administracion/audit'), api.get('/administracion/moderation-log')])
     let html = `<h3 class="serif" style="margin-bottom:10px">Registro de moderacion</h3>`
     html += modRes.data.data.length ? `<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Entidad</th><th>Accion</th><th>Motivo</th><th>Moderador</th><th>Fecha</th></tr></thead><tbody>` +
       modRes.data.data.map((m) => `<tr><td>${esc(m.entity_table)}</td><td><span class="chip ${m.action === 'validar' ? 'validado' : 'rechazado'}">${esc(m.action)}</span></td><td>${esc(m.reason || '—')}</td><td>${esc(m.moderator || '—')}</td><td>${esc((m.created_at || '').slice(0, 16))}</td></tr>`).join('') +

@@ -10,7 +10,7 @@ export type Variables = {
   permissions: string[]
 }
 
-export const JWT_SECRET_FALLBACK = 'sitp-zarzal-dev-secret-change-in-prod'
+export const JWT_SECRET_FALLBACK = 'yanapakuy-dev-secret-change-in-prod'
 
 export function getSecret(env: Bindings): string {
   return env.JWT_SECRET || JWT_SECRET_FALLBACK

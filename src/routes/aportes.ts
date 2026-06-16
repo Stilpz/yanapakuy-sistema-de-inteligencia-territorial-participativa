@@ -3,12 +3,12 @@ import { uuidv4 } from '../lib/auth'
 import type { Bindings, Variables } from '../lib/types'
 import { requireAuth, requirePermission } from '../lib/middleware'
 
-const sub = new Hono<{ Bindings: Bindings; Variables: Variables }>()
+const aportes = new Hono<{ Bindings: Bindings; Variables: Variables }>()
 
 const CATEGORIES = ['sismo', 'via', 'hidrico']
 
-// GET /api/field-submissions — PUBLICO: solo aportes validados (antes del auth middleware)
-sub.get('/', async (c) => {
+// GET /api/aportes — PUBLICO: solo aportes validados (antes del auth middleware)
+aportes.get('/', async (c) => {
   const { results } = await c.env.DB
     .prepare(
       `SELECT uuid, category, geom, attributes, photo_url, status, created_at
@@ -28,10 +28,10 @@ sub.get('/', async (c) => {
 })
 
 // Todo lo demas requiere autenticacion
-sub.use('/*', requireAuth)
+aportes.use('/*', requireAuth)
 
-// POST /api/field-submissions — crea aporte en estado 'pendiente' (entra a moderacion)
-sub.post('/', requirePermission('field.create'), async (c) => {
+// POST /api/aportes — crea aporte en estado 'pendiente' (entra a moderacion)
+aportes.post('/', requirePermission('field.create'), async (c) => {
   const user = c.get('user')
   const body = await c.req.json().catch(() => ({}))
   const { category, geometry, attributes, photo_url } = body
@@ -55,8 +55,8 @@ sub.post('/', requirePermission('field.create'), async (c) => {
   )
 })
 
-// GET /api/field-submissions/mine — mis aportes (cualquier estado)
-sub.get('/mine', async (c) => {
+// GET /api/aportes/mine — mis aportes (cualquier estado)
+aportes.get('/mine', async (c) => {
   const user = c.get('user')
   const { results } = await c.env.DB
     .prepare(
@@ -78,9 +78,9 @@ sub.get('/mine', async (c) => {
   return c.json({ data })
 })
 
-// PATCH /api/field-submissions/:uuid — el dueño edita SOLO mientras siga 'pendiente'
+// PATCH /api/aportes/:uuid — el dueño edita SOLO mientras siga 'pendiente'
 // (moderador/admin con field.validate pueden editar siempre — Policy fina)
-sub.patch('/:uuid', requirePermission('field.create'), async (c) => {
+aportes.patch('/:uuid', requirePermission('field.create'), async (c) => {
   const user = c.get('user')
   const perms = c.get('permissions')
   const uuid = c.req.param('uuid')
@@ -121,4 +121,4 @@ sub.patch('/:uuid', requirePermission('field.create'), async (c) => {
   return c.json({ message: 'Aporte actualizado.', id: uuid })
 })
 
-export default sub
+export default aportes
