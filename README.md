@@ -23,9 +23,16 @@ La propuesta original recomienda **Laravel + PostgreSQL/PostGIS + Vue/Nuxt**. Es
 > **Nota técnica:** D1/SQLite no tiene PostGIS. Las operaciones métricas (buffers a Romeral, áreas) que en PostGIS usan `ST_Transform` a EPSG:9377 quedan documentadas como trabajo de un microservicio geoespacial futuro (equivalente al "Go opcional" de la Fase 3 de la propuesta).
 
 ## URLs
-- **Local (sandbox)**: https://3000-iansb6gubs54m5rqim487-ad490db5.sandbox.novita.ai
-- **API health**: `/api/health`
-- **Producción**: pendiente de despliegue a Cloudflare Pages
+- **Producción**: https://yanapakuy.pages.dev ✅ (Cloudflare Pages, rama `main`)
+- **API health**: https://yanapakuy.pages.dev/api/health
+- **GitHub**: https://github.com/Stilpz/yanapakuy-sistema-de-inteligencia-territorial-participativa
+
+## Despliegue
+- **Plataforma**: Cloudflare Pages (edge serverless) + D1 (SQLite distribuida)
+- **Proyecto Pages**: `yanapakuy` · **BD D1**: `yanapakuy-production` (binding `DB`)
+- **Secretos de producción**: `JWT_SECRET`, `ADMIN_BOOTSTRAP_TOKEN` (Pages → Settings → Environment variables, tipo *secret*)
+- **Primer ADMIN**: creado vía `POST /api/auth/bootstrap` (email `admin@yanapakuy-zarzal.co`); el endpoint queda autodesactivado. Ver [`docs/CREACION_USUARIOS.md`](docs/CREACION_USUARIOS.md).
+- **Estado**: ✅ Activo · **Última actualización**: 2026-06-16
 
 ## Funcionalidades completadas
 - **Portal público (sin login)**: geovisor Leaflet (mapa oscuro) con capas conmutables (límite municipal, red hídrica Cauca + La Paila, traza Cauca-Romeral, cinturón cañero, cabecera, aportes validados); tablero de indicadores con KPIs animados y 2 gráficos (paradoja del suelo cañero; percepción ciudadana radar); escenarios prospectivos CMIP6 interactivos (Tendencial/Crítico/Deseable × 2038/2046/2056, SSP2-4.5/SSP5-8.5).
