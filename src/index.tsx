@@ -19,7 +19,7 @@ app.use('/api/*', logger())
 // ---------- API ----------
 const api = new Hono<{ Bindings: Bindings; Variables: Variables }>()
 
-api.get('/health', (c) => c.json({ status: 'ok', service: 'SITP Zarzal', ts: new Date().toISOString() }))
+api.get('/health', (c) => c.json({ status: 'ok', service: 'Yanapakuy (SITP Zarzal)', ts: new Date().toISOString() }))
 
 api.route('/auth', authRoutes)
 api.route('/me', meRoutes)

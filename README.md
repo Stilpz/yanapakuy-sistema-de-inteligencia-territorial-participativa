@@ -1,9 +1,11 @@
-# SITP Zarzal — Sistema de Inteligencia Territorial Participativa
+# Yanapakuy — Sistema de Inteligencia Territorial Participativa (SITP)
 
 ## Resumen del proyecto
-- **Nombre**: SITP Zarzal (Universidad del Valle — Apropiación Social del Conocimiento)
-- **Objetivo**: Convertir la metodología del SITP en un **aplicativo web en línea, permanente y bidireccional**: cualquier persona del planeta **consulta** el estado del territorio de Zarzal (mapas, indicadores, escenarios) y los actores registrados **aportan** datos, evidencia y deliberación.
-- **Consigna**: *"El POT no es un contrato, es un proceso."*
+- **Nombre**: **Yanapakuy** · Sistema de Inteligencia Territorial Participativa de Zarzal, Valle del Cauca (Universidad del Valle — Apropiación Social del Conocimiento)
+- **Idea fuerza**: *El territorio que se piensa a sí mismo.* Yanapakuy une la evidencia científica (IGAC, DANE, IDEAM, NASA) con el saber popular de Zarzal para gestionar el **riesgo**, el **agua** y el **alimento**. Un sistema vivo, no un documento estático.
+- **Objetivo**: Convertir la metodología del SITP en un **aplicativo web en línea, permanente y bidireccional**: cualquier persona del planeta **consulta** el estado del territorio de Zarzal (mapas, indicadores, escenarios) y los actores registrados **aportan** datos, evidencia y deliberación. El SITP permite ajustes permanentes: cada aporte, cada dato satelital y cada decisión retroalimentan el ciclo.
+- **Marco conceptual**: Fals Borda (IAP), Luhmann (sistemas sociales), R. García (sistemas complejos).
+- **Consigna**: *"El PBOT no es un contrato, es un proceso."*
 
 ## Adaptación arquitectónica (importante)
 La propuesta original recomienda **Laravel + PostgreSQL/PostGIS + Vue/Nuxt**. Este aplicativo despliega en **Cloudflare Pages (edge serverless)**, que no permite PHP/PostgreSQL. Se **tradujo fielmente** esa arquitectura preservando **todas las decisiones de diseño validadas**:

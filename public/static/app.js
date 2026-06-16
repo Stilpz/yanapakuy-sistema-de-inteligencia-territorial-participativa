@@ -67,7 +67,7 @@ function renderHeader() {
        </div>`
   return `
   <div class="register"><div class="wrap">
-    <span><b>SITP</b> ZARZAL</span>
+    <span><b>YANAPAKUY</b> · SITP ZARZAL</span>
     <span>LAT <b>4.39 N</b></span><span>LON <b>76.07 W</b></span>
     <span>ALT <b>916 m</b></span><span>AREA <b>367.9 km2</b></span>
     <span>POB <b>43.252</b> (DANE 2025)</span>
@@ -76,8 +76,8 @@ function renderHeader() {
   </div></div>
   <header class="nav"><div class="wrap">
     <div class="brand" id="brand">
-      <div class="glyph">SZ</div>
-      <div>SITP Zarzal<small>INTELIGENCIA TERRITORIAL PARTICIPATIVA</small></div>
+      <div class="glyph">Y</div>
+      <div>Yanapakuy<small>SISTEMA DE INTELIGENCIA TERRITORIAL PARTICIPATIVA</small></div>
     </div>
     <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
     <nav class="links" id="nav-links">
@@ -110,14 +110,14 @@ async function doLogout() {
 function renderFooter() {
   return `<footer><div class="wrap">
     <div>
-      <div class="serif" style="font-size:18px;color:var(--cal)">SITP Zarzal</div>
-      <p style="max-width:42ch;margin-top:8px">Programa de Apropiacion Social del Conocimiento — Universidad del Valle. Datos de prototipo: cifras y geometrias aproximadas, no oficiales.</p>
+      <div class="serif" style="font-size:18px;color:var(--cal)">Yanapakuy</div>
+      <p style="max-width:46ch;margin-top:8px">Sistema de Inteligencia Territorial Participativa de Zarzal, Valle del Cauca. Une la evidencia cientifica con el saber popular para gestionar el riesgo, el agua y el alimento. Programa de Apropiacion Social del Conocimiento — Universidad del Valle. Datos de prototipo: cifras y geometrias aproximadas, no oficiales.</p>
     </div>
     <div class="mono">
       FUENTES: IGAC · DANE · IDEAM · NASA · SGC · CVC<br>
       MARCO LEGAL: Ley 1581/2012 (habeas data)<br>
       MARCO CONCEPTUAL: Fals Borda · Luhmann · R. Garcia<br>
-      "El POT no es un contrato, es un proceso."
+      "El PBOT no es un contrato, es un proceso."
     </div>
   </div></footer>`
 }
@@ -131,9 +131,10 @@ function renderPortal() {
   return `
   <section class="hero" id="sec-top"><div class="wrap">
     <div class="eyebrow">Observatorio geoterritorial · Zarzal, Valle del Cauca</div>
-    <h1>Del documento al <em>proceso vivo</em> del territorio.</h1>
-    <p class="lead">Cualquier persona del planeta puede <b>consultar</b> el estado del territorio de Zarzal —mapas, indicadores, escenarios climaticos— y los actores registrados pueden <b>aportar</b> datos, evidencia y deliberacion.</p>
-    <div class="consigna">"El POT no es un contrato, es un proceso."</div>
+    <h1>El territorio que se <em>piensa a si mismo</em>.</h1>
+    <p class="lead"><b>Yanapakuy</b> une la evidencia cientifica (IGAC, DANE, IDEAM, NASA) con el saber popular de Zarzal para gestionar el <b>riesgo</b>, el <b>agua</b> y el <b>alimento</b>. Un sistema vivo, no un documento estatico.</p>
+    <div class="consigna">"El PBOT no es un contrato, es un proceso."</div>
+    <p class="hero-note">El SITP permite ajustes permanentes: cada aporte, cada dato satelital y cada decision retroalimentan el ciclo. Inspirado en <b>Fals Borda</b> (IAP), <b>Luhmann</b> (sistemas sociales) y <b>Garcia</b> (sistemas complejos).</p>
     <div class="hero-cta">
       <button class="btn btn-gold" data-go="mapa"><i class="fas fa-map-location-dot"></i> Explorar el geovisor</button>
       <button class="btn btn-ghost" data-go="participar"><i class="fas fa-comments"></i> Participar</button>
@@ -454,7 +455,7 @@ function openAuth(mode, note) {
   const isLogin = mode === 'login'
   openModal(`
     <h3>${isLogin ? 'Iniciar sesion' : 'Crear perfil'}</h3>
-    <div class="sub">${isLogin ? 'Accede para aportar al SITP.' : 'Tu rol inicial sera ACTOR. La consulta no requiere cuenta.'}</div>
+    <div class="sub">${isLogin ? 'Accede para aportar a Yanapakuy.' : 'Tu rol inicial sera ACTOR. La consulta no requiere cuenta.'}</div>
     ${note ? `<div class="alert ok">${esc(note)}</div>` : ''}
     <div id="auth-err"></div>
     <form class="form-grid" id="auth-form">
